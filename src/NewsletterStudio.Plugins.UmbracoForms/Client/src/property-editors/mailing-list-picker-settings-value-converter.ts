@@ -1,7 +1,7 @@
 import { UmbPropertyValueData } from "@umbraco-cms/backoffice/property";
 import { UmbPropertyEditorConfig } from "@umbraco-cms/backoffice/property-editor";
 
-export class PickerSettingValueConverter {
+export class MailingListPickerSettingValueConverter {
 
   /**
    * Called when the view is loaded, convert stored value to property values expected value
@@ -48,7 +48,7 @@ export class PickerSettingValueConverter {
 
     config.push({
       alias: "max",
-      value: 1,
+      value: 0,
     });
 
     return Promise.resolve(config);

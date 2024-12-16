@@ -6,27 +6,7 @@ namespace NewsletterStudio.Plugins.UmbracoForms.Transactionals;
 
 public class UmbracoFormsMergeFieldProvider : ITransactionalEmailMergeFieldProvider
 {
-    public static readonly MergeField PostedFromUrlMergeField = new MergeField()
-    {
-        Placeholder = "postedFromUrl",
-        Text = "Posted From Url",
-        GroupText = "Information"
-    };
-
-    public static readonly MergeField FormNameMergeField = new MergeField()
-    {
-        Placeholder = "formName",
-        Text = "Form Name",
-        GroupText = "Information"
-    };
-
-    public static readonly MergeField AllFormFieldsUrlMergeField = new MergeField()
-    {
-        Placeholder = "allFormFields",
-        Text = "All Form Fields",
-        GroupText = "Automatic"
-    };
-
+    
     private readonly IFormService _formService;
 
     public UmbracoFormsMergeFieldProvider(IFormService formService)
@@ -38,6 +18,10 @@ public class UmbracoFormsMergeFieldProvider : ITransactionalEmailMergeFieldProvi
     public string Alias => ProviderAlias;
     public string DisplayName => "Umbraco Forms";
 
+    /// <summary>
+    /// Returns "Groups" for the "Transactional Data Model" drop down. Basically this returns all forms.
+    /// </summary>
+    /// <returns></returns>
     public List<MergeFieldSourceGroup> GetGroups()
     {
         var list = new List<MergeFieldSourceGroup>();
@@ -80,11 +64,11 @@ public class UmbracoFormsMergeFieldProvider : ITransactionalEmailMergeFieldProvi
                 });
             }
 
-            list.Add(PostedFromUrlMergeField);
-            list.Add(FormNameMergeField);
-            list.Add(AllFormFieldsUrlMergeField);
+            list.Add(Constants.GenericMergeFields.PostedFromUrlMergeField);
+            list.Add(Constants.GenericMergeFields.FormNameMergeField);
+            list.Add(Constants.GenericMergeFields.AllFormFieldsUrlMergeField);
 
-            //TODO v2: Notifications to add site-specific stuff.
+            //TODO v2: Provide notification to add site-specific generic merge fields.
 
         }
 
@@ -94,23 +78,8 @@ public class UmbracoFormsMergeFieldProvider : ITransactionalEmailMergeFieldProvi
 
     public MergeFieldValuesCollection ExtractValues(TransactionalMergeFieldValuesRequestModel request)
     {
-        if (request.CustomModel.GetType().Name == "UmbracoForms.Core.Models.Recored")
-        {
-            // Do something cool
-        }
-
-        // Thinking that we could pass a "Record" or something here and check if it is a record, then extract values.
-
-
-        // What would we do here? Expect a "Record" from forms? Or what? Might work. Otherwise the code that calles the "send email"-method on Newsletter Studio service would have to 
-        // know how to "parse" the aliases for the models.
-
-        return new MergeFieldValuesCollection(new List<MergeFieldValue>()
-            {
-                new MergeFieldValue("firstname", "HardcodedFirstname"),
-                new MergeFieldValue("lastname", "HardcodedLastname"),
-                new MergeFieldValue("howManyPeople", "45")
-            });
-
+        //NOTE: Merge fields are added in SendTransactionalWorkflowType since we need access to the form that's being sent.
+        //      Just returning an empty collection here.
+        return new MergeFieldValuesCollection();
     }
 }

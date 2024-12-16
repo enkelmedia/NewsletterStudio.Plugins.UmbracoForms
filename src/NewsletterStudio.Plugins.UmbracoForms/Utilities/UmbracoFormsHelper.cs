@@ -4,11 +4,16 @@ namespace NewsletterStudio.Plugins.UmbracoForms.Utilities;
 
 internal sealed class UmbracoFormsHelper
 {
-    internal static Lazy<List<Guid>> KnownMultiLineFields = new Lazy<List<Guid>>(() => new List<Guid>()
-        {
-           Guid.Parse(Umbraco.Forms.Core.Constants.FieldTypes.RichText),
-           Guid.Parse(Umbraco.Forms.Core.Constants.FieldTypes.Textarea)
-        });
+    //TODO: make this extendable
+    internal static Lazy<List<Guid>> KnownMultiLineFields = new Lazy<List<Guid>>(() => new List<Guid>() {
+       Guid.Parse(Umbraco.Forms.Core.Constants.FieldTypes.RichText),
+       Guid.Parse(Umbraco.Forms.Core.Constants.FieldTypes.Textarea)
+    });
+
+    internal FormFieldCollection ExtractFormCollection(Record record)
+    {
+        return new FormFieldCollection(ExtractFormValues(record));
+    }
 
     internal List<FormFieldValue> ExtractFormValues(Record record)
     {
@@ -55,8 +60,18 @@ internal sealed class UmbracoFormsHelper
         return false;
     }
 
+}
 
+internal class FormFieldCollection
+{
+    public List<FormFieldValue> Fields { get; private set; }
 
+    public FormFieldValue? GetByAlias(string alias) => Fields.FirstOrDefault(x => x.Alias.Equals(alias));
+
+    public FormFieldCollection(List<FormFieldValue> fields)
+    {
+        Fields = fields;
+    }
 }
 
 internal class FormFieldValue

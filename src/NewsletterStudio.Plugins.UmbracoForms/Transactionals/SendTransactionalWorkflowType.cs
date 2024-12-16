@@ -6,6 +6,8 @@ using NewsletterStudio.Core.Public.Models;
 using NewsletterStudio.Core.Rendering;
 using NewsletterStudio.Plugins.UmbracoForms.Utilities;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Ocsp;
+using Polly;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
@@ -21,12 +23,24 @@ public class SendTransactionalWorkflowType : WorkflowType
     private readonly INewsletterStudioService _newsletterStudioService;
     private readonly IUmbracoContextFactory _umbracoContextFactory;
 
+    /// <summary>
+    /// Holds the configured transactional email.
+    /// </summary>
     [Setting(nameof(TransactionalEmail),View= "Ns.PropertyEditorUi.TransactionalEmailPicker", IsMandatory = true, DisplayOrder = 50)]
-    public string TransactionalEmail { get; set; }
+    public string? TransactionalEmail { get; set; }
 
-    [Setting(nameof(SendToEmail), View= "Forms.PropertyEditorUi.TextWithFieldPicker", IsMandatory = true, DisplayOrder = 100)]
-    public string SendToEmail { get; set; }
+    /// <summary>
+    /// Email to which the translational email will be sent, would replace the "To"-property of the transactional email.
+    /// </summary>
+    [Setting(nameof(SendToEmail), View= "Forms.PropertyEditorUi.TextWithFieldPicker", IsMandatory = false, DisplayOrder = 100)]
+    public string? SendToEmail { get; set; }
 
+    /// <summary>
+    /// WorkflowType that sends emails using Newsletter Studios Transactional Email-feature
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="newsletterStudioService"></param>
+    /// <param name="umbracoContextFactory"></param>
     public SendTransactionalWorkflowType(
         ILogger<SendTransactionalWorkflowType> logger,
         INewsletterStudioService newsletterStudioService,
@@ -42,7 +56,6 @@ public class SendTransactionalWorkflowType : WorkflowType
         this.Description = "Sends transactional e-mail";
         this.Icon = "icon-paper-plane";
         this.Group = "Email";
-
     }
 
     public override async Task<WorkflowExecutionStatus> ExecuteAsync(WorkflowExecutionContext context)
@@ -51,8 +64,7 @@ public class SendTransactionalWorkflowType : WorkflowType
 
         if (!configuredTransactionalEmails.Any())
         {
-            _logger.LogError("Form Submission: Could not trigger workflow since no valid Transactional Email was configured.");
-
+            _logger.LogError("Newsletter Studio | Umbraco Forms | Form Submission: Could not trigger workflow since no valid Transactional Email was configured.");
             return WorkflowExecutionStatus.Completed;
         }
 
@@ -60,20 +72,7 @@ public class SendTransactionalWorkflowType : WorkflowType
         var allFieldsAndValues = helper.ExtractFormValues(context.Record);
 
         var req = new SendTransactionalEmailRequest();
-        req.MergeFields.AddRange(GetFormFieldsAndValues(allFieldsAndValues));
-
-        using var cxtRef = _umbracoContextFactory.EnsureUmbracoContext();
-        var postedFromPage = cxtRef.UmbracoContext.Content!.GetById(context.Record.UmbracoPageId);
-        if (postedFromPage != null)
-        {
-            var url = postedFromPage.Url(mode: UrlMode.Absolute);
-            req.MergeFields.Add(UmbracoFormsMergeFieldProvider.PostedFromUrlMergeField.Placeholder, url);
-        }
-
-        req.MergeFields.Add(UmbracoFormsMergeFieldProvider.FormNameMergeField.Placeholder, context.Form.Name);
-
-        PopulateAllFormFieldsMergeField(req, allFieldsAndValues);
-
+        this.PopulateMergeFields(req, context, allFieldsAndValues);
 
         if (!string.IsNullOrEmpty(SendToEmail))
         {
@@ -88,7 +87,6 @@ public class SendTransactionalWorkflowType : WorkflowType
         {
             _logger.LogWarning("Error sending Transactional Email in Forms Workflow {error}", result.Message);
         }
-
 
         return WorkflowExecutionStatus.Completed;
     }
@@ -105,6 +103,22 @@ public class SendTransactionalWorkflowType : WorkflowType
         }
 
         return exceptions;
+    }
+
+    private void PopulateMergeFields(SendTransactionalEmailRequest req, WorkflowExecutionContext context,List<FormFieldValue> allFieldsAndValues)
+    {
+        req.MergeFields.AddRange(GetFormFieldsAndValues(allFieldsAndValues));
+
+        using var cxtRef = _umbracoContextFactory.EnsureUmbracoContext();
+        var postedFromPage = cxtRef.UmbracoContext.Content!.GetById(context.Record.UmbracoPageId);
+        if (postedFromPage != null)
+        {
+            var url = postedFromPage.Url(mode: UrlMode.Absolute);
+            req.MergeFields.Add(Constants.GenericMergeFields.PostedFromUrlMergeField.Placeholder, url);
+        }
+        req.MergeFields.Add(Constants.GenericMergeFields.FormNameMergeField.Placeholder, context.Form.Name);
+
+        PopulateAllFormFieldsMergeField(req, allFieldsAndValues);
     }
 
     private string GetValueFromField(string fieldValue, List<FormFieldValue> formFields)
@@ -168,7 +182,7 @@ public class SendTransactionalWorkflowType : WorkflowType
         var html = sb.ToString();
 
         // Add to merge fields.
-        req.MergeFields.Add(UmbracoFormsMergeFieldProvider.AllFormFieldsUrlMergeField.Placeholder, html);
+        req.MergeFields.Add(Constants.GenericMergeFields.AllFormFieldsUrlMergeField.Placeholder, html);
 
     }
 

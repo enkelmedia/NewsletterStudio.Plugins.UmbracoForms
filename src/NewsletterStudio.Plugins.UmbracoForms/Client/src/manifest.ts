@@ -1,5 +1,6 @@
 import type { UmbBackofficeExtensionRegistry } from "@umbraco-cms/backoffice/extension-registry";
-import { PickerSettingValueConverter } from "./property-editors/picker-settings-value-converter.js";
+import { TransactionalPickerSettingValueConverter } from "./property-editors/transactional-picker-settings-value-converter.js";
+import { MailingListPickerSettingValueConverter } from "./property-editors/mailing-list-picker-settings-value-converter.js";
 
 const translationManifests : Array<UmbExtensionManifest> = [
 	{
@@ -13,19 +14,26 @@ const translationManifests : Array<UmbExtensionManifest> = [
 	}
 ]
 
-
-const pickerSettingsValueConverter : UmbExtensionManifest = {
+const transactionalPickerSettingsValueConverter = {
   type: "formsSettingValueConverter",
   alias: "Ns.Plugin.UmbracoForms.SettingValueConverter.TransactionalPicker",
   name: "Newsletter Studio Plugin Umbraco Forms Settings Converter Transactional Picker",
-  //@ts-ignore
   propertyEditorUiAlias: "Ns.PropertyEditorUi.TransactionalEmailPicker",
-  api: PickerSettingValueConverter,
+  api: TransactionalPickerSettingValueConverter,
+}
+
+const mailingListPickerSettingsValueConverter = {
+  type: "formsSettingValueConverter",
+  alias: "Ns.Plugin.UmbracoForms.SettingValueConverter.MailingListPicker",
+  name: "Newsletter Studio Plugin Umbraco Forms Settings Converter Mailing List Picker",
+  propertyEditorUiAlias: "Ns.PropertyEditorUi.MailingListPicker",
+  api: MailingListPickerSettingValueConverter,
 }
 
 export function registerManifest(registry : UmbBackofficeExtensionRegistry) {
     registry.registerMany([
-    pickerSettingsValueConverter,
+      transactionalPickerSettingsValueConverter,
+      mailingListPickerSettingsValueConverter,
     ...translationManifests
 	]);
 }
