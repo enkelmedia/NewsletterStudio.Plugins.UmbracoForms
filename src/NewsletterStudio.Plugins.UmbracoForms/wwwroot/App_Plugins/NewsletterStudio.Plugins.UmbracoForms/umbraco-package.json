@@ -1,0 +1,14 @@
+{
+  "$schema": "../../../../../samples/UmbracoTestSite/umbraco-package-schema.json",
+  "name": "Newsletter Studio Umbraco Forms Plugin",
+  "version": "15.0.0",
+  "extensions": [
+    {
+      "type": "backofficeEntryPoint",
+      "alias": "Ns.Plugin.UmbracoForms.EntryPoint",
+      "name": "Newsletter Studio Plugin Umbraco Forms Entry Point",
+      "js": "/App_Plugins/NewsletterStudio.Plugins.UmbracoForms/dist/ns-plugin.js?v1500",
+      "weight": 13000
+    }
+  ]
+}

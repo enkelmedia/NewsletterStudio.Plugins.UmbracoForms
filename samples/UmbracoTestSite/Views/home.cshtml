@@ -1,0 +1,22 @@
+@using Umbraco.Forms.Web
+
+@{
+	Layout = null;
+}
+
+<html>
+<head>
+    @Html.RenderUmbracoFormDependencies(Url)
+</head>
+<body>
+<h1>Home</h1>
+
+@await Component.InvokeAsync("RenderForm", new { formId = Guid.Parse("6e712fe0-5ad2-4a1a-9634-70ff9cf0b1ca"), 
+    theme = "default",
+    includeScripts = false })
+
+</body>
+</html>
+
+
+

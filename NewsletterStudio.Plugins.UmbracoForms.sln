@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35506.116 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsletterStudio.Plugins.UmbracoForms", "src\NewsletterStudio.Plugins.UmbracoForms\NewsletterStudio.Plugins.UmbracoForms.csproj", "{2B1A7797-B0D8-439E-8F55-FBD48FC5390F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbracoTestSite", "samples\UmbracoTestSite\UmbracoTestSite.csproj", "{BC12DEAE-6EDB-48AB-9BF4-9AC267BC568B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{27C474C8-45E9-442F-83E3-0E4BAF4B14A3}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2B1A7797-B0D8-439E-8F55-FBD48FC5390F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B1A7797-B0D8-439E-8F55-FBD48FC5390F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B1A7797-B0D8-439E-8F55-FBD48FC5390F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B1A7797-B0D8-439E-8F55-FBD48FC5390F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC12DEAE-6EDB-48AB-9BF4-9AC267BC568B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC12DEAE-6EDB-48AB-9BF4-9AC267BC568B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC12DEAE-6EDB-48AB-9BF4-9AC267BC568B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC12DEAE-6EDB-48AB-9BF4-9AC267BC568B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
