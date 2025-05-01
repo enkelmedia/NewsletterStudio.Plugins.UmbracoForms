@@ -4,12 +4,6 @@ namespace NewsletterStudio.Plugins.UmbracoForms.Utilities;
 
 internal sealed class UmbracoFormsHelper
 {
-    //TODO: make this extendable
-    internal static Lazy<List<Guid>> KnownMultiLineFields = new Lazy<List<Guid>>(() => new List<Guid>() {
-       Guid.Parse(Umbraco.Forms.Core.Constants.FieldTypes.RichText),
-       Guid.Parse(Umbraco.Forms.Core.Constants.FieldTypes.Textarea)
-    });
-
     internal FormFieldCollection ExtractFormCollection(Record record)
     {
         return new FormFieldCollection(ExtractFormValues(record));
@@ -21,7 +15,10 @@ internal sealed class UmbracoFormsHelper
 
         foreach (var recordField in record.RecordFields)
         {
-            var fieldAlias = recordField.Value.Alias;
+            var fieldAlias = recordField.Value?.Alias;
+
+            if(string.IsNullOrEmpty(fieldAlias))
+                continue;
 
             object[] objArray;
             if (recordField.Value == null || !recordField.Value.HasValue())
@@ -40,8 +37,7 @@ internal sealed class UmbracoFormsHelper
             }
             else
             {
-                list.Add(new FormFieldValue(fieldAlias, value, recordField!.Value!.Field!.Caption, IsMultiLine(recordField.Value)));
-
+                list.Add(new FormFieldValue(recordField.Key, fieldAlias, value, recordField!.Value!.Field!.Caption, IsMultiLine(recordField.Value)));
             }
 
         }
@@ -54,7 +50,7 @@ internal sealed class UmbracoFormsHelper
         if (field?.Field == null)
             return false;
 
-        if (KnownMultiLineFields.Value.Contains(field.Field.FieldTypeId))
+        if (NewsletterStudioUmbracoFormsConstants._knownMultiLineFields.Value.Contains(field.Field.FieldTypeId))
             return true;
 
         return false;
@@ -66,14 +62,14 @@ internal class FormFieldCollection
 {
     public List<FormFieldValue> Fields { get; private set; }
 
+    public FormFieldValue? GetById(Guid id) => Fields.FirstOrDefault(x => x.Id == id);
+
     public FormFieldValue? GetByAlias(string alias) => Fields.FirstOrDefault(x => x.Alias.Equals(alias));
 
     public bool TryGetByAlias(string alias, out FormFieldValue field)
     {
         field = GetByAlias(alias)!;
-
         return field != null!;
-
     }
 
     public FormFieldCollection(List<FormFieldValue> fields)
@@ -84,13 +80,16 @@ internal class FormFieldCollection
 
 internal class FormFieldValue
 {
-    public FormFieldValue(string alias, string value, string caption, bool isMultiLine)
+    public FormFieldValue(Guid id, string alias, string value, string caption, bool isMultiLine)
     {
+        Id = id;
         Alias = alias;
         Caption = caption;
         Value = value;
         IsMultiLine = isMultiLine;
     }
+
+    public Guid Id { get; set; }
 
     public string Alias { get; set; }
     public string Caption { get; set; }

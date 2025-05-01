@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NewsletterStudio.Core.Public;
-using NewsletterStudio.Core.Public.Models;
-using NewsletterStudio.Core.Transactional;
 using NewsletterStudio.Plugins.UmbracoForms.Backoffice.Api;
 using NewsletterStudio.Plugins.UmbracoForms.Backoffice.Models;
-using NewsletterStudio.Web.Controllers;
 using Umbraco.Cms.Api.Common.Attributes;
 using Umbraco.Cms.Api.Management.Controllers;
 using Umbraco.Cms.Web.Common.Routing;
@@ -19,30 +16,25 @@ internal static class EndpointConfiguration
 }
 
 /// <summary>
-/// The controller
+/// Controller for the Newsletter Studio Umbraco Forms-Plugin
 /// </summary>
 [ApiExplorerSettings(GroupName = EndpointConfiguration.GroupName)]
 [BackOfficeRoute($"{Umbraco.Cms.Core.Constants.Web.ManagementApiPath}{EndpointConfiguration.RouteSegment}")]
 [MapToApi(NewsletterStudioPluginApiConfiguration.ApiName)]
 public class UmbracoFormsController : ManagementApiControllerBase
 {
-    private readonly INewsletterStudioService _newsletterStudioService;
     private readonly IWorkspaceService _workspaceService;
 
     public UmbracoFormsController(
-        INewsletterStudioService newsletterStudioService,
         IWorkspaceService workspaceService
         )
     {
-        _newsletterStudioService = newsletterStudioService;
         _workspaceService = workspaceService;
     }
 
     /// <summary>
-    /// Get configuration
+    /// Returns current Newsletter Studio configuration
     /// </summary>
-    /// <param name="req"></param>
-    /// <returns></returns>
     [HttpPost("get-configuration")]
     [ProducesResponseType(typeof(GetConfigurationResponse), StatusCodes.Status200OK)]
     public IActionResult GetConfiguration()

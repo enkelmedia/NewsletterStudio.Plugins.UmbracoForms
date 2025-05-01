@@ -3,44 +3,45 @@ import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 import "@newsletterstudio/umbraco/components";
 
 /**
- * Component that lists a set of "known" fields to be mapped against another list of fields (and/or static values)
- */
+* Component that lists a set of "known" fields to be mapped against another list of fields (and/or static values)
+* @element ns-fields-mapper
+* @fires CustomEvent#change - When the mapping changes changes
+*/
 @customElement("ns-fields-mapper")
 export class NsFieldsMapperElement extends UmbElementMixin(
   LitElement
 ) {
 
+  /**
+   * List of defined mappings
+   */
   @property({type:Array})
   value : NsFieldMapping[] = [];
 
+  /**
+   * Fields to map. Each field in this array will be mappable to a pickable field or static value.
+   */
   @property({type:Array})
   fieldsToMap : NsMappingFieldDefinition[] = [];
 
+  /**
+   * Pickable fields. Each field to map will be mappable to any of the fields from this property
+   */
   @property({type:Array})
   pickableFields : NsMappingFieldDefinition[] = [];
 
-  pickerValue = [];
-
-  async connectedCallback() {
-    super.connectedCallback();
-  }
-
-  async firstUpdated() {
-
-  }
-
   #handleFieldToChange(event : InputEvent) {
     var select = event.target as HTMLSelectElement;
-    var mappedField = select.getAttribute('data-field-alias')!;
+    var mappedField = select.getAttribute('data-field-id')!;
     this.#setOrUpdateValue(mappedField, select.value);
   }
 
   #handleStaticInputChange(event : InputEvent) {
     var input = event.target as HTMLInputElement;
-    var mappedFieldAlias = input.getAttribute('data-field-alias')!;
+    var mappedFieldAlias = input.getAttribute('data-field-id')!;
 
     let newValue = [...this.value];
-    let existing = newValue.find(x=>x.fieldAlias == mappedFieldAlias);
+    let existing = newValue.find(x=>x.fieldId == mappedFieldAlias);
 
     if(existing){
       let index = newValue.indexOf(existing);
@@ -50,24 +51,28 @@ export class NsFieldsMapperElement extends UmbElementMixin(
     this.value = newValue;
 
     this.dispatchEvent(new CustomEvent('change'));
-
   }
 
-  #setOrUpdateValue(alias:string,value:string) {
+  /**
+   * Sets the mapping value for a given field alias
+   * @param alias
+   * @param value
+   */
+  #setOrUpdateValue(alias:string, value:string) {
 
     let newValue = [...this.value];
 
-    let existing = newValue.find(x=>x.fieldAlias == alias);
+    let existing = newValue.find(x=>x.fieldId == alias);
     if(existing && value == ''){
       let index = newValue.indexOf(existing);
       newValue.splice(index,1);
     }
     if(existing){
       let index = newValue.indexOf(existing);
-      newValue.splice(index,1,{fieldAlias:alias,valueAlias:value,staticValue : ''});
+      newValue.splice(index,1,{fieldId:alias,valueId:value,staticValue : ''});
     }
     else {
-      newValue.push({fieldAlias:alias,valueAlias:value,staticValue : ''});
+      newValue.push({fieldId:alias,valueId:value,staticValue : ''});
     }
 
     this.value = newValue;
@@ -76,13 +81,18 @@ export class NsFieldsMapperElement extends UmbElementMixin(
 
   }
 
+  #fieldValueIdEquals(fieldId : string, valueId : string) {
+    const field = this.value.find(x=>x.fieldId == fieldId);
+    return field?.valueId == valueId;
+  }
+
   render() {
     return html`<div>
       <table>
         <thead>
           <tr>
-            <th>Recipient</th>
-            <th>Form field</th>
+            <th>${this.localize.term('nsUmbracoForms_recipient')}</th>
+            <th>${this.localize.term('nsUmbracoForms_formField')}</th>
           </tr>
         </thead>
         <tbody>
@@ -91,21 +101,21 @@ export class NsFieldsMapperElement extends UmbElementMixin(
             <td>${field.label}</td>
             <td>
               <select
-                data-field-alias=${field.alias}
+                data-field-id=${field.id}
                 @change=${this.#handleFieldToChange}>
-                <option value="" ?selected=${this.value.find(x=>x.fieldAlias == field.alias)?.valueAlias == ''}>Unmapped</option>
+                <option value="" ?selected=${this.#fieldValueIdEquals(field.id,'')}>${this.localize.term('nsUmbracoForms_notAssigned')}</option>
                 ${repeat(this.pickableFields,(option)=>html`
-                  <option value=${option.alias} ?selected=${this.value.find(x=>x.fieldAlias == field.alias)?.valueAlias == option.alias}>${option.label}</option>
+                  <option value=${option.id} ?selected=${this.#fieldValueIdEquals(field.id,option.id)}>${option.label}</option>
                 `)}
-                <option value="static" ?selected=${this.value.find(x=>x.fieldAlias == field.alias)?.valueAlias == 'static'}>Static</option>
+                <option value="static" ?selected=${this.#fieldValueIdEquals(field.id,'static')}>${this.localize.term('nsUmbracoForms_static')}</option>
               </select>
-              ${when(this.value.find(x=>x.fieldAlias == field.alias)?.valueAlias == 'static', ()=>html`
+              ${when(this.#fieldValueIdEquals(field.id,'static'), ()=>html`
                 <div>
                   <input
                   type="text"
-                  placeholder="Enter static value"
-                  .value=${this.value.find(x=>x.fieldAlias == field.alias)?.staticValue ?? ''}
-                  data-field-alias=${field.alias}
+                  placeholder=${this.localize.term('nsUmbracoForms_staticPlaceholder')}
+                  .value=${this.value.find(x=>x.fieldId == field.id)?.staticValue ?? ''}
+                  data-field-id=${field.id}
                   @change=${this.#handleStaticInputChange}
                   />
                 </div>
@@ -172,9 +182,6 @@ export class NsFieldsMapperElement extends UmbElementMixin(
       input {
         margin-top:3px;
       }
-
-
-
     `,
   ];
 }
@@ -182,13 +189,16 @@ export class NsFieldsMapperElement extends UmbElementMixin(
 export default NsFieldsMapperElement;
 
 export type NsMappingFieldDefinition = {
-  alias : string;
+  /** Id or alias for field */
+  id : string;
+
+  /** UI label for field */
   label : string;
 }
 
 export type NsFieldMapping = {
-  fieldAlias : string;
-  valueAlias : string;
+  fieldId : string;
+  valueId : string;
   staticValue : string | null | undefined;
 }
 

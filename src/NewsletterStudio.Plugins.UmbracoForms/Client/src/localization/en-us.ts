@@ -10,5 +10,13 @@ export default {
 
     AddToMailingListConfigurationLabel : 'Mailing List Configuration',
     AddToMailingListConfigurationDescription : 'Choose a mailing list and mapp the fields.'
+  },
+  nsUmbracoForms : {
+    recipient : 'Recipient',
+    formField : 'Form field',
+    notAssigned : 'Not assigned',
+    static: 'Static value',
+    staticPlaceholder : 'Enter static value'
   }
+
 } as UmbLocalizationDictionary

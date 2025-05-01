@@ -43,7 +43,7 @@ const nsUmbracoFormsAddToMailingListConfigurationPropertyEditorUi : UmbExtension
   "type": "propertyEditorUi",
   "alias": "Ns.Plugin.UmbracoForms.AddToMailingListPropertyEditorUi",
   "name": "Newsletter Studio Plugin Umbraco Forms Add Recipients Settings Property Editor",
-  "element" : ()=> import('./property-editors/ns-umbraco-forms-field-mapper/ns-umbraco-forms-field-mapper.element.ts'),
+  "element" : ()=> import('./property-editors/ns-umbraco-forms-field-mapper/ns-umbraco-forms-add-to-mailing-list-configuration.element.js'),
   "meta": {
    "label": "Newsletter Studio Add Config For Umbraco Forms",
    "propertyEditorSchemaAlias": "Umbraco.TextBox", // Might be this that needs to go.

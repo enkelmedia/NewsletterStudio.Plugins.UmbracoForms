@@ -4,20 +4,24 @@ import { UmbPropertyEditorConfigCollection,UmbPropertyEditorUiElement,UmbPropert
 import { NsMailingListPickerElement } from "@newsletterstudio/umbraco/components";
 import "@newsletterstudio/umbraco/components";
 import { tryExecuteAndNotify } from "@umbraco-cms/backoffice/resources";
-import { GetConfigurationResponse, UmbracoFormsResource } from "../../backend-api";
-import { FakeFormsWorkspaceContext } from "./fake-types";
-import NsFieldsMapperElement, {NsMappingFieldDefinition} from './../../components/ns-fields-mapper/ns-fields-mapper.element.js'
-import './../../components/ns-fields-mapper/ns-fields-mapper.element.js';
+import { GetConfigurationResponse, UmbracoFormsResource } from "../../backend-api/index.js";
+import { FakeFormsWorkspaceContext } from "../../utilities/umbraco-forms/fake-types.js";
+import NsFieldsMapperElement, {NsMappingFieldDefinition} from '../../components/ns-fields-mapper/ns-fields-mapper.element.js'
+import '../../components/ns-fields-mapper/ns-fields-mapper.element.js';
 import { MailingListPropertyEditorValueModel } from "@newsletterstudio/umbraco/backend";
 import { UmbFormControlMixin } from "@umbraco-cms/backoffice/validation";
 import { UmbLitElement } from "@umbraco-cms/backoffice/lit-element";
+import { getAllFields } from "../../utilities/umbraco-forms/umbraco-forms-utilities.js";
 
-/*
-  Should: Be able to get info about "what to map", that is the custom fields needed for a given workspace.
-          Ups. That would mean that we can't support lists from different workspaces. That's PROBABLY fine.
-  */
-@customElement("ns-umbraco-forms-field-mapper")
-export default class NsUmbracoFormsFieldMapperElement extends UmbFormControlMixin<PropertyEditorValue | undefined, typeof UmbLitElement>(UmbLitElement, undefined) implements UmbPropertyEditorUiElement {
+/**
+* Property editor for configuration of the "Add to Mailing List" workflow for Umbraco Forms.
+* @element ns-umbraco-forms-field-mapper
+* @fires CustomEvent#change - When the mapping changes changes
+*/
+@customElement("ns-umbraco-forms-add-to-mailing-list-configuration")
+export default class NsUmbracoFormsAddToMailingListConfigurationElement extends
+  UmbFormControlMixin<PropertyEditorValue | undefined, typeof UmbLitElement>(UmbLitElement, undefined) implements UmbPropertyEditorUiElement
+{
 
   @query("ns-mailing-list-picker")
   picker? : NsMailingListPickerElement;
@@ -39,7 +43,8 @@ export default class NsUmbracoFormsFieldMapperElement extends UmbFormControlMixi
   @state()
   _mappedFields : NsFieldMapping[] = [];
 
-  pickerValue : MailingListPropertyEditorValueModel[] = [];
+  @state()
+  _pickerValue : MailingListPropertyEditorValueModel[] = [];
 
   async connectedCallback() {
     super.connectedCallback();
@@ -68,29 +73,11 @@ export default class NsUmbracoFormsFieldMapperElement extends UmbFormControlMixi
     this.consumeContext('UmbWorkspaceContext', (i)=>{
       var instance = i as FakeFormsWorkspaceContext;
 
-      console.log('UmbWorkspaceContext',instance);
-      instance.data.forEach((item)=>{
-        console.log(item.name);
-      });
-
       this.observe(instance.data,(forms)=>{
 
-        const formFields : NsMappingFieldDefinition[] = [];
+        const allFields = getAllFields(forms);
 
-        // This will list form fields
-        forms.pages.forEach((page)=>{
-          page.fieldSets.forEach((fieldSet)=>{
-            fieldSet.containers.forEach((container)=>{
-              container.fields.forEach((field)=>{
-
-                formFields.push({
-                  alias : field.alias, //TODO OR id?
-                  label : field.caption
-                });
-              })
-            })
-          })
-        });
+        const formFields : NsMappingFieldDefinition[] = allFields.map(field=> ({id:field.id, label:field.caption}));
 
         this._formFields = formFields;
 
@@ -103,10 +90,10 @@ export default class NsUmbracoFormsFieldMapperElement extends UmbFormControlMixi
   updated(changedProperties: Map<string | number | symbol, unknown>) {
     if (changedProperties.has('value')) {
 
-      this.pickerValue = this.value?.mailingList ? [this.value.mailingList] : [];
+      this._pickerValue = this.value?.mailingList ? [this.value.mailingList] : [];
       this._mappedFields = this.value?.mappings ?? []
 
-      if(this.pickerValue) {
+      if(this._pickerValue) {
         this.#ensureWorkspaceFields();
       }
 
@@ -115,7 +102,7 @@ export default class NsUmbracoFormsFieldMapperElement extends UmbFormControlMixi
 
   #handleListPickerChange() {
 
-    this.pickerValue = this.picker?.value ?? [];
+    this._pickerValue = this.picker?.value ?? [];
     this.#ensureWorkspaceFields();
     this.#triggerValueUpdate();
 
@@ -129,13 +116,13 @@ export default class NsUmbracoFormsFieldMapperElement extends UmbFormControlMixi
       return;
     }
 
-    // Update fields
+    // Well known fields
     const workspaceFields : NsMappingFieldDefinition[] = [
-      {alias:'email',label:'Email'},
-      {alias:'name',label:'Name'},
-      {alias:'firstName',label:'First name'},
-      {alias:'lastName',label:'Last name'},
-      {alias:'source',label:'Source'},
+      {id:'email',label:'Email'},
+      {id:'name',label:'Name'},
+      {id:'firstName',label:'First name'},
+      {id:'lastName',label:'Last name'},
+      {id:'source',label:'Source'},
     ];
 
     const selectedWorkspaceKey = this.picker!.value![0].workspaceKey;
@@ -143,7 +130,7 @@ export default class NsUmbracoFormsFieldMapperElement extends UmbFormControlMixi
 
     selectedWorkspace?.customFields.forEach((field)=>{
       workspaceFields.push({
-        alias : field.alias,
+        id : field.alias,
         label : field.label
       })
     });
@@ -156,27 +143,39 @@ export default class NsUmbracoFormsFieldMapperElement extends UmbFormControlMixi
     var mappingElement = event.target as NsFieldsMapperElement;
 
     this._mappedFields = mappingElement.value;
-
     this.#triggerValueUpdate();
 
   }
 
   #triggerValueUpdate(){
+
+    const mappedFields : NsFieldMapping[] = [];
+
+    if(this._mappedFields) {
+      this._mappedFields.forEach((field)=>{
+
+        // ensure that the mapped field exists on the model (might have been removed).
+        var fieldToMap = this._workspaceFields.find(x=>x.id == field.fieldId);
+        if(fieldToMap) {
+          mappedFields.push(field);
+        }
+
+      });
+    }
+
     this.value = {
-      mailingList : this.pickerValue[0],
-      mappings : this._mappedFields ?? []
+      mailingList : this._pickerValue[0],
+      mappings : mappedFields
     } as PropertyEditorValue
 
     this.dispatchEvent(new UmbPropertyValueChangeEvent());
   }
 
-
-
   render() {
     return html`<div>
       <!--@ts-ignore-->
       <ns-mailing-list-picker
-        .value=${this.pickerValue}
+        .value=${this._pickerValue}
         @change=${this.#handleListPickerChange}
         min=${1}
         max=${1}
@@ -215,8 +214,8 @@ export default class NsUmbracoFormsFieldMapperElement extends UmbFormControlMixi
 }
 
 export type NsFieldMapping = {
-  fieldAlias : string;
-  valueAlias : string;
+  fieldId : string;
+  valueId : string;
   staticValue : string | null | undefined;
 }
 
