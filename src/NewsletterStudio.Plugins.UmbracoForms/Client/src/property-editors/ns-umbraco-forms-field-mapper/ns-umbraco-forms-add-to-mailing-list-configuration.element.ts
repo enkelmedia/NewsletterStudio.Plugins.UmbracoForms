@@ -1,17 +1,16 @@
-import {LitElement,html,css,customElement,property,query, state, when} from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
+import {html,css,customElement,property,query, state, when} from "@umbraco-cms/backoffice/external/lit";
 import { UmbPropertyEditorConfigCollection,UmbPropertyEditorUiElement,UmbPropertyValueChangeEvent} from "@umbraco-cms/backoffice/property-editor";
 import { NsMailingListPickerElement } from "@newsletterstudio/umbraco/components";
-import "@newsletterstudio/umbraco/components";
 import { tryExecuteAndNotify } from "@umbraco-cms/backoffice/resources";
 import { GetConfigurationResponse, UmbracoFormsResource } from "../../backend-api/index.js";
 import { FakeFormsWorkspaceContext } from "../../utilities/umbraco-forms/fake-types.js";
 import NsFieldsMapperElement, {NsMappingFieldDefinition} from '../../components/ns-fields-mapper/ns-fields-mapper.element.js'
-import '../../components/ns-fields-mapper/ns-fields-mapper.element.js';
 import { MailingListPropertyEditorValueModel } from "@newsletterstudio/umbraco/backend";
 import { UmbFormControlMixin } from "@umbraco-cms/backoffice/validation";
 import { UmbLitElement } from "@umbraco-cms/backoffice/lit-element";
 import { getAllFields } from "../../utilities/umbraco-forms/umbraco-forms-utilities.js";
+import "@newsletterstudio/umbraco/components";
+import '../../components/ns-fields-mapper/ns-fields-mapper.element.js';
 
 /**
 * Property editor for configuration of the "Add to Mailing List" workflow for Umbraco Forms.
@@ -49,40 +48,19 @@ export default class NsUmbracoFormsAddToMailingListConfigurationElement extends
   async connectedCallback() {
     super.connectedCallback();
 
-    console.log('picker connectedCallback', this.picker);
-
     var result = await tryExecuteAndNotify(this,UmbracoFormsResource.getConfiguration());
     this._newsletterStudioConfiguration = result.data;
 
     this.#ensureWorkspaceFields();
 
-    console.log('UmbracoForms Configuration', result.data);
-
-    console.log('picker connectedCallback2', this.picker);
-    console.log('picker connectedCallback2 | this.value', this.value);
-
-    this.consumeContext('Forms.GlobalContext', (instance)=>{
-      console.log('Forms.GlobalContext',instance);
-
-    });
-
-    this.consumeContext('forms-context', (instance)=>{
-      console.log('forms-context',instance);
-    });
-
     this.consumeContext('UmbWorkspaceContext', (i)=>{
       var instance = i as FakeFormsWorkspaceContext;
 
       this.observe(instance.data,(forms)=>{
-
         const allFields = getAllFields(forms);
-
         const formFields : NsMappingFieldDefinition[] = allFields.map(field=> ({id:field.id, label:field.caption}));
-
         this._formFields = formFields;
-
       });
-
     });
 
   }
@@ -101,13 +79,12 @@ export default class NsUmbracoFormsAddToMailingListConfigurationElement extends
   }
 
   #handleListPickerChange() {
-
     this._pickerValue = this.picker?.value ?? [];
     this.#ensureWorkspaceFields();
     this.#triggerValueUpdate();
-
   }
 
+  /** Ensure that _workspaceFields are up to date, this is reflected in the ns-field-mapper element. */
   #ensureWorkspaceFields() {
 
     if(this.picker?.value?.length == 0)
@@ -191,8 +168,6 @@ export default class NsUmbracoFormsAddToMailingListConfigurationElement extends
       `)}
     </div>`;
   }
-
-  // <umb-debug visible dialog></umb-debug>
 
   static styles = [
     css`
