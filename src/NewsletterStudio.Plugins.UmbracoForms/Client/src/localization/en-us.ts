@@ -7,5 +7,8 @@ export default {
 
     SendToEmailLabel : 'Send to Email',
     SendToEmailDescription : 'Optional. Use this to send to a email from a form field.',
+
+    AddToMailingListConfigurationLabel : 'Mailing List Configuration',
+    AddToMailingListConfigurationDescription : 'Choose a mailing list and mapp the fields.'
   }
 } as UmbLocalizationDictionary

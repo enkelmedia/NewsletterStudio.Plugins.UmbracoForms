@@ -25,12 +25,13 @@
     <Copyright>Enkel Media Stockholm AB</Copyright>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <NoWarn>1701;1702;1591;1587;1570;1574;NU1507;NU1903;NU1902</NoWarn>
+    <Configurations>Debug;Release;DebugNoFrontendBuild</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Umbraco.Cms.Web.Website" Version="[15.0.0,16)" />
     <PackageReference Include="Umbraco.Cms.Api.Common" Version="[15.0.0,16)" />
-    <PackageReference Include="NewsletterStudio.Core" Version="[15.0.0,16)" IncludeAssets="compile" />
-    <PackageReference Include="NewsletterStudio.Web" Version="[15.0.0,16)" IncludeAssets="compile" />
+    <PackageReference Include="NewsletterStudio.Core" Version="[15.0.1,16)" IncludeAssets="compile" />
+    <PackageReference Include="NewsletterStudio.Web" Version="[15.0.1,16)" IncludeAssets="compile" />
     <PackageReference Include="Umbraco.Forms.Core" Version="15.0.3" />
     <PackageReference Include="Umbraco.Forms.Core.Providers" Version="15.0.3" />
   </ItemGroup>

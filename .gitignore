@@ -379,3 +379,5 @@ FodyWeavers.xsd
 
 # Ignore the copied App_Plugins folder
 samples/*/App_Plugins/*
+
+todo.md

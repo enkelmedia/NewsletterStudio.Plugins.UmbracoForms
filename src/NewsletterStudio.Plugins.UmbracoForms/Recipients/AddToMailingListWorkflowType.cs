@@ -16,11 +16,9 @@ public class AddToMailingListWorkflowType : WorkflowType
     private readonly ILogger<AddToMailingListWorkflowType> _logger;
     private readonly INewsletterStudioService _newsletterStudioService;
 
-    /// <summary>
-    /// Email to which the translational email will be sent, would replace the "To"-property of the transactional email.
-    /// </summary>
-    [Setting(nameof(MailingLists), View = "Ns.PropertyEditorUi.MailingListPicker", IsMandatory = true, DisplayOrder = 50)]
-    public string? MailingLists { get; set; }
+    
+    [Setting(nameof(AddToMailingListConfiguration),View = "Ns.Plugin.UmbracoForms.AddToMailingListPropertyEditorUi")]
+    public string? AddToMailingListConfiguration { get; set; }
 
     public AddToMailingListWorkflowType(
         ILogger<AddToMailingListWorkflowType> logger,
@@ -54,59 +52,87 @@ public class AddToMailingListWorkflowType : WorkflowType
         var valueEmail = emailField.Value;
         var valueName = nameField?.Value ?? "";
 
-        var mailingListsToAddTo = GetConfiguredMailingLists();
+        var configuration = GetConfiguration();
 
-        if (mailingListsToAddTo.Any())
+        if (configuration?.MailingList is null)
+            return WorkflowExecutionStatus.Failed;
+
+
+        var addRecipientRequest = new AddRecipientRequest(valueEmail)
+            .ForWorkspace(configuration.MailingList.WorkspaceKey)
+            .SubscribeTo(configuration.MailingList.MailingListKey)
+            .WithName(valueName) //TODO: Use based on form
+            .WithSource($"Umbraco Form: " + context.Form.Name); //Max 255 characters should be fine
+
+
+        //TODO: Create some kind of helper that extracts and maps values based on the mappings.
+        //      Static values also need to be supported.
+
+        if (formValues.TryGetByAlias("fieldBasedOnMapping", out nameField))
         {
-            var groupedByWorkspace = mailingListsToAddTo.GroupBy(x => x.WorkspaceKey);
-
-            foreach (var workspaceGroupedLists in groupedByWorkspace)
-            {
-                var addRecipientRequest = new AddRecipientRequest(valueEmail)
-                    .ForWorkspace(workspaceGroupedLists.Key)
-                    .WithName(valueName)
-                    .WithSource($"Umbraco Form: " + context.Form.Name); //Max 255 characters should be fine
-
-                foreach (var list in workspaceGroupedLists)
-                {
-                    // By not passing a status, any double opt-in configuration will be respected.
-                    addRecipientRequest.SubscribeTo(list.MailingListKey);
-                }
-
-                //TODO: Handle result, log errors.
-                var result = _newsletterStudioService.AddRecipient(addRecipientRequest);
-
-            }
-
+            addRecipientRequest.WithName(nameField.Value);
         }
 
+        //TODO: Source, use mapping OR fallback. 
+
+        //TODO: Fields
+        
+
+        //TODO: Handle result, log errors.
+        var result = _newsletterStudioService.AddRecipient(addRecipientRequest);
+
+        
         return WorkflowExecutionStatus.Completed;
     }
 
     public override List<Exception> ValidateSettings()
     {
         var exceptions = new List<Exception>();
+        var configuration = this.GetConfiguration();
 
-        if (GetConfiguredMailingLists().Count < 1)
-            exceptions.Add(new Exception("Please choose at least one mailing list."));
+        if(configuration?.MailingList is null)
+            exceptions.Add(new Exception("Please choose a mailing list."));
 
         return exceptions;
     }
 
-    private List<MailingListPropertyEditorValueModel> GetConfiguredMailingLists()
+    private AddToMailingListConfigurationModel? GetConfiguration()
     {
-        if (string.IsNullOrEmpty(this.MailingLists))
-            return new List<MailingListPropertyEditorValueModel>();
+        if (string.IsNullOrEmpty(this.AddToMailingListConfiguration))
+            return null;
 
         try
         {
-            return JsonConvert.DeserializeObject<List<MailingListPropertyEditorValueModel>>(this.MailingLists) ?? new List<MailingListPropertyEditorValueModel>();
+            return JsonConvert.DeserializeObject<AddToMailingListConfigurationModel>(this.AddToMailingListConfiguration);
         }
-        catch 
+        catch
         {
         }
 
-        return new List<MailingListPropertyEditorValueModel>();
-
+        return null;
     }
+
+}
+
+internal static class WellKnownFieldsAliases
+{
+    public const string Email = "email";
+    public const string Name = "name";
+    public const string FirstName = "firstName";
+    public const string LastName = "lastName";
+    public const string Source = "source";
+
+}
+
+public class AddToMailingListConfigurationModel
+{
+    public MailingListPropertyEditorValueModel? MailingList { get; set; }
+    public List<NewsletterStudioFieldMapping>? Mappings { get; set; }
+}
+
+public class NewsletterStudioFieldMapping
+{
+    public string FieldAlias { get; set; }
+    public string ValueAlias { get; set; }
+    public string StaticValue { get; set; }
 }

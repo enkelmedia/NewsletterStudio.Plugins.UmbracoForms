@@ -68,6 +68,14 @@ internal class FormFieldCollection
 
     public FormFieldValue? GetByAlias(string alias) => Fields.FirstOrDefault(x => x.Alias.Equals(alias));
 
+    public bool TryGetByAlias(string alias, out FormFieldValue field)
+    {
+        field = GetByAlias(alias)!;
+
+        return field != null!;
+
+    }
+
     public FormFieldCollection(List<FormFieldValue> fields)
     {
         Fields = fields;

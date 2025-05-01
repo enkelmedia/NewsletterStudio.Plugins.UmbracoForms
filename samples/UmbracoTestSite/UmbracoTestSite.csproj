@@ -4,6 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <NoWarn>1701;1702;1591;1587;1570;1574;NU1507;NU1903;NU1902</NoWarn>
+    <Configurations>Debug;Release;DebugNoFrontendBuild</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
