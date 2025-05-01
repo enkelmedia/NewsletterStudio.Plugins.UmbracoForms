@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NewsletterStudio.Core.Backoffice.PropertyEditors.TransactionalEmailPicker.FrontendModels;
 using NewsletterStudio.Core.Public;
@@ -20,8 +21,8 @@ namespace NewsletterStudio.Plugins.UmbracoForms.Transactionals;
 public class SendTransactionalWorkflowType : WorkflowType
 {
     private readonly ILogger<SendTransactionalWorkflowType> _logger;
-    private readonly INewsletterStudioService _newsletterStudioService;
     private readonly IUmbracoContextFactory _umbracoContextFactory;
+    private readonly IServiceProvider _serviceProvider;
 
     /// <summary>
     /// Holds the configured transactional email.
@@ -43,13 +44,13 @@ public class SendTransactionalWorkflowType : WorkflowType
     /// <param name="umbracoContextFactory"></param>
     public SendTransactionalWorkflowType(
         ILogger<SendTransactionalWorkflowType> logger,
-        INewsletterStudioService newsletterStudioService,
-        IUmbracoContextFactory umbracoContextFactory
+        IUmbracoContextFactory umbracoContextFactory,
+        IServiceProvider serviceProvider
         )
     {
         _logger = logger;
-        _newsletterStudioService = newsletterStudioService;
         _umbracoContextFactory = umbracoContextFactory;
+        _serviceProvider = serviceProvider;
 
         this.Id = new Guid("C873DF4D-2D5A-402E-B534-C15C09CC323F");
         this.Name = "Send Transactional";
@@ -80,12 +81,18 @@ public class SendTransactionalWorkflowType : WorkflowType
         }
 
         req.TransactionalEmailKey = configuredTransactionalEmails.First().TransactionalEmailKey;
+        req.NotInBackground();
 
-        var result = await _newsletterStudioService.SendTransactionalAsync(req);
+        //TODO: Update this code and inject the INewsletterStudioService into workflow when the services have been updated to handle these situations.
+        using var serviceScope = _serviceProvider.CreateScope();
+        var newsletterStudioService = serviceScope.ServiceProvider.GetRequiredService<INewsletterStudioService>();
+        
+        var result = await newsletterStudioService.SendTransactionalAsync(req);
 
         if (result.Failed)
         {
             _logger.LogWarning("Error sending Transactional Email in Forms Workflow {error}", result.Message);
+            return WorkflowExecutionStatus.Failed;
         }
 
         return WorkflowExecutionStatus.Completed;
