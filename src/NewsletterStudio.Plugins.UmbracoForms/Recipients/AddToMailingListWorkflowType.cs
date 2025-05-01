@@ -34,7 +34,7 @@ public class AddToMailingListWorkflowType : WorkflowType
         this.Id = new Guid("575ADFDB-7C9F-4935-82D8-8A5B37225DAE");
         this.Name = "Add to Mailing List";
         this.Description = "Adds a new recipient to a mailing list";
-        this.Icon = "icon-paper-plane"; //TODO Change this
+        this.Icon = "icon-users";
         this.Group = "Newsletter Studio";
     }
 

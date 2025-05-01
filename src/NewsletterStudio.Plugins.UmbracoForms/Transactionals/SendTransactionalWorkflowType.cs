@@ -40,8 +40,8 @@ public class SendTransactionalWorkflowType : WorkflowType
     /// WorkflowType that sends emails using Newsletter Studios Transactional Email-feature
     /// </summary>
     /// <param name="logger"></param>
-    /// <param name="newsletterStudioService"></param>
     /// <param name="umbracoContextFactory"></param>
+    /// <param name="serviceProvider"></param>
     public SendTransactionalWorkflowType(
         ILogger<SendTransactionalWorkflowType> logger,
         IUmbracoContextFactory umbracoContextFactory,
@@ -53,7 +53,7 @@ public class SendTransactionalWorkflowType : WorkflowType
         _serviceProvider = serviceProvider;
 
         this.Id = new Guid("C873DF4D-2D5A-402E-B534-C15C09CC323F");
-        this.Name = "Send Transactional";
+        this.Name = "Send Transactional Email";
         this.Description = "Sends transactional e-mail";
         this.Icon = "icon-paper-plane";
         this.Group = "Email";
