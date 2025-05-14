@@ -9,12 +9,10 @@
     <PackageId>NewsletterStudio.Plugins.UmbracoForms</PackageId>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://www.newsletterstudio.org</PackageProjectUrl>
-    <PackageTags>Umbraco</PackageTags>
+    <PackageTags>umbraco umbraco-marketplace umbraco-forms newsletter-studio transactional</PackageTags>
     <RepositoryUrl>https://github.com/enkelmedia/NewsletterStudio.Plugins.UmbracoForms</RepositoryUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <Description>Plugin for Newsletter Studio to integrate with Umbraco Forms.</Description>
-    <PackageReleaseNotes>
-    </PackageReleaseNotes>
     <IncludeSymbols>false</IncludeSymbols>
     <PackageIcon>icon.png</PackageIcon>
     <Version>15.0.0</Version>
@@ -23,6 +21,7 @@
     <InformationalVersion>15.0.0-rc</InformationalVersion>
     <Authors>Enkel Media Stockholm AB</Authors>
     <Copyright>Enkel Media Stockholm AB</Copyright>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <NoWarn>1701;1702;1591;1587;1570;1574;NU1507;NU1903;NU1902</NoWarn>
     <Configurations>Debug;Release;DebugNoFrontendBuild</Configurations>
@@ -37,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="build\icon.png" Pack="true" PackagePath="\" />
+    <None Include="build\readme.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="Client\**\*">

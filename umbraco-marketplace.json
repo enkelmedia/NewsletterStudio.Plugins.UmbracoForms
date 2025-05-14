@@ -1,0 +1,38 @@
+{
+  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+  "AuthorDetails": {
+    "Name": "Newsletter Studio",
+    "Description": "Email Studio, use to send responsive campaigns and transactional emails from Umbraco.",
+    "Url": "https://www.newsletterstudio.org",
+    "ImageUrl": ""
+  },
+  "Title": "Newsletter Studio with Umbraco Forms",
+  "Description": "Integration between Umbraco Forms and Newsletter Studio, allowing you to use the responsive email editor to craft beautiful transactional emails to be sent when forms are submitted. This extension also includes a workflow type for adding recipients to Newsletter Studio’s mailing lists.",
+  "DocumentationUrl": "https://www.newsletterstudio.org/documentation/package/extensions/umbraco-forms/",
+  "IssueTrackerUrl": "https://github.com/enkelmedia/NewsletterStudio.Plugins.UmbracoForms/issues",
+  "Category": "Campaign & Marketing",
+  "LicenseTypes": [ "MIT" ],
+  "PackageType": "Package",
+  "Tags": [
+    "newsletter studio",
+    "umbraco forms",
+    "forms",
+    "email",
+    "transactional"
+  ],
+  "VideoUrl": "https://www.youtube.com/watch?v=rw68vw2oiLA",
+  "Screenshots": [
+    {
+      "ImageUrl": "https://www.newsletterstudio.org/documentation/media/extensions/umbraco-forms/editor-merge-field-all-fields.png",
+      "Caption": "Use responsive email editor to design emails"
+    },
+    {
+      "ImageUrl": "https://www.newsletterstudio.org/documentation/media/extensions/umbraco-forms/workflow-send-pick-template.png",
+      "Caption": "Use workflow type to send transactional emails"
+    },
+    {
+      "ImageUrl": "https://www.newsletterstudio.org/documentation/media/extensions/umbraco-forms/workflow-add-map-fields.png",
+      "Caption": "Add recipients to mailing list based on form submissions"
+    }
+  ]
+}
