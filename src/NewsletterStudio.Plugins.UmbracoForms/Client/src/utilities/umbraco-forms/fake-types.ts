@@ -1,6 +1,7 @@
+import { UmbContextMinimal } from "@umbraco-cms/backoffice/context-api";
 import { Observable } from "@umbraco-cms/backoffice/observable-api"
 
-export type FakeFormsWorkspaceContext = {
+export type FakeFormsWorkspaceContext = UmbContextMinimal & {
   data : Observable<FakeFormsWorkspaceData>
 }
 

@@ -1,7 +1,7 @@
 import {html,css,customElement,property,query, state, when} from "@umbraco-cms/backoffice/external/lit";
 import { UmbPropertyEditorConfigCollection,UmbPropertyEditorUiElement,UmbPropertyValueChangeEvent} from "@umbraco-cms/backoffice/property-editor";
 import { NsMailingListPickerElement } from "@newsletterstudio/umbraco/components";
-import { tryExecuteAndNotify } from "@umbraco-cms/backoffice/resources";
+import { tryExecute, tryExecuteAndNotify } from "@umbraco-cms/backoffice/resources";
 import { GetConfigurationResponse, UmbracoFormsResource } from "../../backend-api/index.js";
 import { FakeFormsWorkspaceContext } from "../../utilities/umbraco-forms/fake-types.js";
 import NsFieldsMapperElement, {NsMappingFieldDefinition} from '../../components/ns-fields-mapper/ns-fields-mapper.element.js'
@@ -48,12 +48,16 @@ export default class NsUmbracoFormsAddToMailingListConfigurationElement extends
   async connectedCallback() {
     super.connectedCallback();
 
-    var result = await tryExecuteAndNotify(this,UmbracoFormsResource.getConfiguration());
+    var result = await tryExecute(this,UmbracoFormsResource.getConfiguration());
     this._newsletterStudioConfiguration = result.data;
 
     this.#ensureWorkspaceFields();
 
-    this.consumeContext('UmbWorkspaceContext', (i)=>{
+    this.consumeContext('UmbWorkspaceContext', (i) => {
+
+      if(!i)
+        return;
+
       var instance = i as FakeFormsWorkspaceContext;
 
       this.observe(instance.data,(forms)=>{
