@@ -1,7 +1,7 @@
 import type { UmbEntryPointOnInit } from '@umbraco-cms/backoffice/extension-api';
 import { UMB_AUTH_CONTEXT } from '@umbraco-cms/backoffice/auth';
 import { registerManifest } from './manifest.js';
-import { client } from './backend-api/client.gen.js'; // This is important for setConfig() to work
+import { client } from './backend-api/client.gen.js';
 
 export const onInit: UmbEntryPointOnInit = (host, extensionRegistry) => {
 

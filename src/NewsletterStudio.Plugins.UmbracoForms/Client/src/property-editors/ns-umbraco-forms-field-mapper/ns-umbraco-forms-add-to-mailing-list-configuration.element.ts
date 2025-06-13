@@ -1,7 +1,7 @@
 import {html,css,customElement,property,query, state, when} from "@umbraco-cms/backoffice/external/lit";
-import { UmbPropertyEditorConfigCollection,UmbPropertyEditorUiElement,UmbPropertyValueChangeEvent} from "@umbraco-cms/backoffice/property-editor";
+import { UmbPropertyEditorConfigCollection,UmbPropertyEditorUiElement} from "@umbraco-cms/backoffice/property-editor";
 import { NsMailingListPickerElement } from "@newsletterstudio/umbraco/components";
-import { tryExecute, tryExecuteAndNotify } from "@umbraco-cms/backoffice/resources";
+import { tryExecute} from "@umbraco-cms/backoffice/resources";
 import { GetConfigurationResponse, UmbracoFormsResource } from "../../backend-api/index.js";
 import { FakeFormsWorkspaceContext } from "../../utilities/umbraco-forms/fake-types.js";
 import NsFieldsMapperElement, {NsMappingFieldDefinition} from '../../components/ns-fields-mapper/ns-fields-mapper.element.js'
@@ -11,6 +11,7 @@ import { UmbLitElement } from "@umbraco-cms/backoffice/lit-element";
 import { getAllFields } from "../../utilities/umbraco-forms/umbraco-forms-utilities.js";
 import "@newsletterstudio/umbraco/components";
 import '../../components/ns-fields-mapper/ns-fields-mapper.element.js';
+import { UmbChangeEvent } from "@umbraco-cms/backoffice/event";
 
 /**
 * Property editor for configuration of the "Add to Mailing List" workflow for Umbraco Forms.
@@ -149,7 +150,7 @@ export default class NsUmbracoFormsAddToMailingListConfigurationElement extends
       mappings : mappedFields
     } as PropertyEditorValue
 
-    this.dispatchEvent(new UmbPropertyValueChangeEvent());
+    this.dispatchEvent(new UmbChangeEvent());
   }
 
   render() {
