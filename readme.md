@@ -6,7 +6,7 @@ Here we keep the source files for the the Umbraco Forms-plugin for [Newsletter S
 
 This plugin contains two main components:
 
-* **Send Transactional Workflow**, a Umbraco Forms Workflow that makes it possible to send a Transactional Email designed in Newsletter Studio when a Form is submitted. This also includes a [merge field provider](https://www.newsletterstudio.org/documentation/package/15.0.0/develop/merge-field-providers/) so that any fields from the from can be picked in the email designer.
+* **Send Transactional Workflow**, a Umbraco Forms Workflow that makes it possible to send a Transactional Email designed in Newsletter Studio when a Form is submitted. This also includes a [merge field provider](https://www.newsletterstudio.org/documentation/package/15.0.0/develop/merge-field-providers/) so that any fields from the Form can be picked in the email designer.
 
 * **Add to Mailing List Workflow**, makes it possible to add a new recipient to one or more Mailing Lists when a form is submitted.  
 
@@ -16,4 +16,4 @@ dotnet add package NewsletterStudio.Plugins.UmbracoForms
 ```
 
 ## Contribute
-Contributions are more than welcome, start with opening an issue.
+Contributions are more than welcome, please start with opening an issue.
