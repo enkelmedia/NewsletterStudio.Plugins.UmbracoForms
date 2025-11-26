@@ -35,9 +35,9 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryUrl>https://github.com/your-org/your-repo</RepositoryUrl>
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-    <UmbracoCmsVersion>[17.0.0-rc2,18.0.0)</UmbracoCmsVersion>
-    <UmbracoFormsVersion>[17.0.0-rc2,18.0.0)</UmbracoFormsVersion>
-    <NewsletterStudioVersion>[17.0.0-rc1,18.0.0)</NewsletterStudioVersion>
+    <UmbracoCmsVersion>[17.0.0-rc4,18.0.0)</UmbracoCmsVersion>
+    <UmbracoFormsVersion>[17.0.0-rc4,18.0.0)</UmbracoFormsVersion>
+    <NewsletterStudioVersion>[17.0.0-rc2,18.0.0)</NewsletterStudioVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Umbraco.Cms.Web.Website" Version="$(UmbracoCmsVersion)" />
