@@ -1,8 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
     <ContentTargetFolders>.</ContentTargetFolders>
@@ -15,15 +12,7 @@
     <Description>Plugin for Newsletter Studio to integrate with Umbraco Forms.</Description>
     <IncludeSymbols>false</IncludeSymbols>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>17.0.0</Version>
-    <AssemblyVersion>16.0.0</AssemblyVersion>
-    <PackageVersion>17.0.0-rc1</PackageVersion>
-    <InformationalVersion>17.0.0-rc1</InformationalVersion>
-    <Authors>Enkel Media Stockholm AB</Authors>
-    <Copyright>Enkel Media Stockholm AB</Copyright>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
-    <NoWarn>1701;1702;1591;1587;1570;1574;NU1507;NU1903;NU1902</NoWarn>
-    <Configurations>Debug;Release;DebugNoFrontendBuild</Configurations>
     <!-- Generate documentation -->
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <!-- PDBs beside DLLs -->
@@ -35,17 +24,17 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryUrl>https://github.com/your-org/your-repo</RepositoryUrl>
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-    <UmbracoCmsVersion>[17.0.0-rc4,18.0.0)</UmbracoCmsVersion>
-    <UmbracoFormsVersion>[17.0.0-rc4,18.0.0)</UmbracoFormsVersion>
-    <NewsletterStudioVersion>[17.0.0-rc2,18.0.0)</NewsletterStudioVersion>
+    <Version>17.0.0</Version>
+    <PackageVersion>17.0.0</PackageVersion>
+    <InformationalVersion>17.0.0</InformationalVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Umbraco.Cms.Web.Website" Version="$(UmbracoCmsVersion)" />
-    <PackageReference Include="Umbraco.Cms.Api.Common" Version="$(UmbracoCmsVersion)" />
-    <PackageReference Include="NewsletterStudio.Core" Version="$(NewsletterStudioVersion)" IncludeAssets="compile" />
-    <PackageReference Include="NewsletterStudio.Web" Version="$(NewsletterStudioVersion)" IncludeAssets="compile" />
-    <PackageReference Include="Umbraco.Forms.Core" Version="$(UmbracoFormsVersion)" />
-    <PackageReference Include="Umbraco.Forms.Core.Providers" Version="$(UmbracoFormsVersion)" />
+    <PackageReference Include="Umbraco.Cms.Web.Website" />
+    <PackageReference Include="Umbraco.Cms.Api.Common" />
+    <PackageReference Include="NewsletterStudio.Core" IncludeAssets="compile" />
+    <PackageReference Include="NewsletterStudio.Web" IncludeAssets="compile" />
+    <PackageReference Include="Umbraco.Forms.Core" />
+    <PackageReference Include="Umbraco.Forms.Core.Providers" />
   </ItemGroup>
   <ItemGroup>
     <None Include="build\icon.png" Pack="true" PackagePath="\" />
