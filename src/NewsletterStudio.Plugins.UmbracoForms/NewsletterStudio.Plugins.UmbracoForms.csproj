@@ -7,8 +7,6 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://www.newsletterstudio.org</PackageProjectUrl>
     <PackageTags>umbraco umbraco-marketplace umbraco-forms newsletter-studio transactional</PackageTags>
-    <RepositoryUrl>https://github.com/enkelmedia/NewsletterStudio.Plugins.UmbracoForms</RepositoryUrl>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <Description>Plugin for Newsletter Studio to integrate with Umbraco Forms.</Description>
     <IncludeSymbols>false</IncludeSymbols>
     <PackageIcon>icon.png</PackageIcon>
@@ -22,7 +20,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <!-- Make SourceLink work + deterministic CI build -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <RepositoryUrl>https://github.com/your-org/your-repo</RepositoryUrl>
+    <RepositoryUrl>https://github.com/enkelmedia/NewsletterStudio.Plugins.UmbracoForms</RepositoryUrl>
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <Version>17.0.0</Version>
     <PackageVersion>17.0.0</PackageVersion>
