@@ -22,9 +22,9 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryUrl>https://github.com/enkelmedia/NewsletterStudio.Plugins.UmbracoForms</RepositoryUrl>
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-    <Version>17.0.0</Version>
-    <PackageVersion>17.0.0</PackageVersion>
-    <InformationalVersion>17.0.0</InformationalVersion>
+    <Version>17.0.1</Version>
+    <PackageVersion>17.0.1</PackageVersion>
+    <InformationalVersion>17.0.1</InformationalVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Umbraco.Cms.Web.Website" />

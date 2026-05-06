@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NewsletterStudio.Core.Backoffice.PropertyEditors.MailingListPicker.FrontendModels;
 using NewsletterStudio.Core.Public;
@@ -16,7 +17,7 @@ namespace NewsletterStudio.Plugins.UmbracoForms.Recipients;
 public class AddToMailingListWorkflowType : WorkflowType
 {
     private readonly ILogger<AddToMailingListWorkflowType> _logger;
-    private readonly INewsletterStudioService _newsletterStudioService;
+    private readonly IServiceProvider _serviceProvider;
 
     /// <summary>
     /// Holds a JSON object of all the configuration, use <see cref="GetConfiguration"/> to get a deserialized instance.
@@ -26,11 +27,11 @@ public class AddToMailingListWorkflowType : WorkflowType
 
     public AddToMailingListWorkflowType(
         ILogger<AddToMailingListWorkflowType> logger,
-        INewsletterStudioService newsletterStudioService
+        IServiceProvider serviceProvider
         )
     {
         _logger = logger;
-        _newsletterStudioService = newsletterStudioService;
+        _serviceProvider = serviceProvider;
         this.Id = new Guid("575ADFDB-7C9F-4935-82D8-8A5B37225DAE");
         this.Name = "Add to Mailing List";
         this.Description = "Adds a new recipient to a mailing list";
@@ -95,7 +96,10 @@ public class AddToMailingListWorkflowType : WorkflowType
 
         }
 
-        var result = _newsletterStudioService.AddRecipient(addRecipientRequest);
+        using var serviceScope = _serviceProvider.CreateScope();
+        var newsletterStudioService = serviceScope.ServiceProvider.GetRequiredService<INewsletterStudioService>();
+
+        var result = newsletterStudioService.AddRecipient(addRecipientRequest);
         if (result.Failed)
         {
             _logger.LogError("Newsletter Studio | Umbraco Forms | Error when adding recipient: {ErrorMessage}.", result.Message);
@@ -104,8 +108,6 @@ public class AddToMailingListWorkflowType : WorkflowType
 
         return WorkflowExecutionStatus.Completed;
     }
-
-    
 
     public override List<Exception> ValidateSettings()
     {
