@@ -56,7 +56,7 @@ public class SendTransactionalWorkflowType : WorkflowType
         this.Name = "Send Transactional Email";
         this.Description = "Sends transactional e-mail";
         this.Icon = "icon-paper-plane";
-        this.Group = "Email";
+        this.Group = "Newsletter Studio";
     }
 
     public override async Task<WorkflowExecutionStatus> ExecuteAsync(WorkflowExecutionContext context)
