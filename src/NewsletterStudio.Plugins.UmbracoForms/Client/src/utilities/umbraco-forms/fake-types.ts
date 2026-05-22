@@ -1,29 +1,9 @@
 import { UmbContextMinimal } from "@umbraco-cms/backoffice/context-api";
-import { Observable } from "@umbraco-cms/backoffice/observable-api"
+import { FormsFormWorkspaceContext } from "@umbraco-forms/backoffice";
 
+/**
+ * Faked types for the "Umbraco Forms Context", this is not exported by the official npm package.
+ */
 export type FakeFormsWorkspaceContext = UmbContextMinimal & {
-  data : Observable<FakeFormsWorkspaceData>
-}
-
-export type FakeFormsWorkspaceData = {
-  name:string;
-  pages : FakeFormsPage[];
-}
-
-export type FakeFormsPage = {
-  fieldSets : FakeFormsFieldset[]
-}
-
-export type FakeFormsFieldset = {
-  containers : FakeFormsContainer[]
-}
-
-export type FakeFormsContainer = {
-  fields : FakeFormsField[]
-}
-
-export type FakeFormsField = {
-  caption:string;
-  alias:string;
-  id:string;
+  formWorkspaceContext : FormsFormWorkspaceContext
 }

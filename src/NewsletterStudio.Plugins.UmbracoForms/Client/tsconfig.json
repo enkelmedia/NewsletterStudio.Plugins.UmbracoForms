@@ -22,7 +22,8 @@
 
     "types" : [
       "@umbraco-cms/backoffice/extension-types",
-      "@newsletterstudio/umbraco/extension-types"
+      "@newsletterstudio/umbraco/extension-types",
+      "@umbraco-forms/backoffice"
     ]
   },
   "include": ["src"]

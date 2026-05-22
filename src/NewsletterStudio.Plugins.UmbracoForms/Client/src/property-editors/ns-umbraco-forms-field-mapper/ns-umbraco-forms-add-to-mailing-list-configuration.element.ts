@@ -12,6 +12,7 @@ import { getAllFields } from "../../utilities/umbraco-forms/umbraco-forms-utilit
 import "@newsletterstudio/umbraco/components";
 import '../../components/ns-fields-mapper/ns-fields-mapper.element.js';
 import { UmbChangeEvent } from "@umbraco-cms/backoffice/event";
+import {FORMS_CONTEXT, FORMS_FORM_WORKSPACE_CONTEXT} from '@umbraco-forms/backoffice'
 
 /**
 * Property editor for configuration of the "Add to Mailing List" workflow for Umbraco Forms.
@@ -61,11 +62,18 @@ export default class NsUmbracoFormsAddToMailingListConfigurationElement extends
 
       var instance = i as FakeFormsWorkspaceContext;
 
-      this.observe(instance.data,(forms)=>{
-        const allFields = getAllFields(forms);
-        const formFields : NsMappingFieldDefinition[] = allFields.map(field=> ({id:field.id, label:field.caption}));
-        this._formFields = formFields;
-      });
+        this.observe(instance.formWorkspaceContext.data,(data)=>{
+
+          if(!data){
+            this._formFields = [];
+            return;
+          }
+
+          const allFields = getAllFields(data.pages);
+          const formFields : NsMappingFieldDefinition[] = allFields.map(field=> ({id:field.id, label:field.caption}));
+          this._formFields = formFields;
+        })
+
     });
 
   }

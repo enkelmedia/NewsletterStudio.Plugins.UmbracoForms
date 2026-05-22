@@ -1,16 +1,16 @@
-import { FakeFormsField, FakeFormsWorkspaceData } from "./fake-types";
+import { Field, Page } from "@umbraco-forms/backoffice";
 
 /**
  * Iterates the form data to extract all fields
  * @param umbracoFormsData
  * @returns
  */
-export function getAllFields(umbracoFormsData : FakeFormsWorkspaceData) {
+export function getAllFields(pages : Page[]) {
 
-  var allFields : FakeFormsField[] = [];
+  var allFields : Field[] = [];
 
   // This will list form fields
-  umbracoFormsData.pages.forEach((page)=>{
+  pages.forEach((page)=>{
     page.fieldSets.forEach((fieldSet)=>{
       fieldSet.containers.forEach((container)=>{
         container.fields.forEach((field)=>{
