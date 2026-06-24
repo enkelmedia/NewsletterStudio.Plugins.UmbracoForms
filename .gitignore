@@ -387,3 +387,4 @@ samples/*/App_Plugins/*
 src/**/wwwroot/**/dist
 
 todo.md
+.codex/

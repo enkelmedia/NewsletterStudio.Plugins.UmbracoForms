@@ -1,14 +1,11 @@
-import { defineConfig,defaultPlugins } from '@hey-api/openapi-ts';
+import { defineConfig } from '@hey-api/openapi-ts';
 
 export default defineConfig({
-	input: 'http://localhost:54108/umbraco/swagger/newsletter-studio-plugin/swagger.json',
+	input: 'http://localhost:54108/umbraco/openapi/newsletter-studio-plugin.json',
 	output: {
 		path: './src/backend-api',
-    format: 'prettier',
-    lint: 'eslint'
 	},
 	plugins: [
-    ...defaultPlugins,
 		{
 			name: '@hey-api/client-fetch',
 
@@ -25,8 +22,11 @@ export default defineConfig({
 		},
 		{
 			name: '@hey-api/sdk',
-			asClass: true,
-      classNameBuilder : '{{name}}Resource'
+      operations: {
+        strategy : 'byTags',
+        container : 'class',
+        containerName : '{{name}}Resource'
+      }
 		}
 	]
 });

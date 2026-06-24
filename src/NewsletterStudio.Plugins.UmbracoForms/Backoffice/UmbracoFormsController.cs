@@ -37,10 +37,10 @@ public class UmbracoFormsController : ManagementApiControllerBase
     /// </summary>
     [HttpPost("get-configuration")]
     [ProducesResponseType(typeof(GetConfigurationResponse), StatusCodes.Status200OK)]
-    public IActionResult GetConfiguration()
+    public async Task<IActionResult> GetConfiguration()
     {
-        var userAccess = _workspaceService.CurrentUserAccess();
-        var workspacesWithAccess = _workspaceService.GetAll().Where(x => userAccess.HasAccessTo(x.UniqueKey)).ToList();
+        var userAccess = await _workspaceService.CurrentUserAccessAsync();
+        var workspacesWithAccess = (await _workspaceService.GetAllAsync()).Where(x => userAccess.HasAccessTo(x.UniqueKey)).ToList();
 
         var response = new GetConfigurationResponse();
 

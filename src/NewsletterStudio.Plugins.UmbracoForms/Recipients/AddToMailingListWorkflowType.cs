@@ -99,7 +99,7 @@ public class AddToMailingListWorkflowType : WorkflowType
         using var serviceScope = _serviceProvider.CreateScope();
         var newsletterStudioService = serviceScope.ServiceProvider.GetRequiredService<INewsletterStudioService>();
 
-        var result = newsletterStudioService.AddRecipient(addRecipientRequest);
+        var result = await newsletterStudioService.AddRecipientAsync(addRecipientRequest);
         if (result.Failed)
         {
             _logger.LogError("Newsletter Studio | Umbraco Forms | Error when adding recipient: {ErrorMessage}.", result.Message);
