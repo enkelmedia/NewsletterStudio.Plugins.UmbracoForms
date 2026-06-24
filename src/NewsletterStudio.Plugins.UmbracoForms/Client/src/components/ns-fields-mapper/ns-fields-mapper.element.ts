@@ -153,10 +153,17 @@ export class NsFieldsMapperElement extends UmbElementMixin(
       select, input {
         width:100%;
         line-height: 20px;
-        background-color: white;
+        color: var(--uui-select-text-color, var(--uui-color-text));
+        background-color: var(--uui-input-background-color, var(--uui-color-surface));
+        border: var(--uui-input-border-width, 1px) solid var(--uui-input-border-color, var(--uui-color-border));
+        border-radius: var(--uui-input-border-radius, var(--uui-border-radius));
         padding: 5.7px 18px 5.7px 8px;
         font-size:14px;
-        border: 1px solid var(--ns-control-border-color);
+
+        &:hover {
+          border: 1px solid var(--uui-select-border-color-hover, var(--uui-color-border-emphasis));
+        }
+
       }
 
       select {
@@ -164,7 +171,6 @@ export class NsFieldsMapperElement extends UmbElementMixin(
         -webkit-appearance: none;
 
         position: relative;
-        background: var(--ns-control-background-color-neutral);
         background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
         background-repeat: no-repeat;
         background-position-x: 100%;
