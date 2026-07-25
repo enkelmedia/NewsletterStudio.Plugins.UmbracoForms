@@ -8,7 +8,6 @@ import NsFieldsMapperElement, {NsMappingFieldDefinition} from '../../components/
 import { MailingListPropertyEditorValueModel } from "@newsletterstudio/umbraco/backend";
 import { UmbFormControlMixin } from "@umbraco-cms/backoffice/validation";
 import { UmbLitElement } from "@umbraco-cms/backoffice/lit-element";
-import { getAllFields } from "../../utilities/umbraco-forms/umbraco-forms-utilities.js";
 import "@newsletterstudio/umbraco/components";
 import '../../components/ns-fields-mapper/ns-fields-mapper.element.js';
 import { UmbChangeEvent } from "@umbraco-cms/backoffice/event";
@@ -55,26 +54,17 @@ export default class NsUmbracoFormsAddToMailingListConfigurationElement extends
 
     this.#ensureWorkspaceFields();
 
-    this.consumeContext('UmbWorkspaceContext', (i) => {
+    // Consume the Form Workspace context
+    this.consumeContext(FORMS_FORM_WORKSPACE_CONTEXT, (instance) => {
 
-      if(!i)
+      if(!instance)
         return;
 
-      var instance = i as FakeFormsWorkspaceContext;
+      const fields = instance.getAllFields();
+      const formFields : NsMappingFieldDefinition[] = fields.map(field=> ({id:field.id, label:field.caption}));
+      this._formFields = formFields;
 
-        this.observe(instance.formWorkspaceContext.data,(data)=>{
-
-          if(!data){
-            this._formFields = [];
-            return;
-          }
-
-          const allFields = getAllFields(data.pages);
-          const formFields : NsMappingFieldDefinition[] = allFields.map(field=> ({id:field.id, label:field.caption}));
-          this._formFields = formFields;
-        })
-
-    });
+    }).passContextAliasMatches();
 
   }
 
